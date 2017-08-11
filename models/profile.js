@@ -9,11 +9,19 @@ module.exports = function(sequelize, DataTypes) {
     linkedin_url: DataTypes.STRING,
     github_url: DataTypes.STRING,
     personal_url: DataTypes.STRING,
+    endorsements: {
+      type : DataTypes.INTEGER,
+      defaultValue: 0
+    },
+    endorsed_people: {
+      type : DataTypes.TEXT,
+    },
     linkedin_id: {type: DataTypes.STRING, unique: true},
     username: {type: DataTypes.STRING, unique: true},
     password: {type: DataTypes.STRING, unique: true}
   },
 	{
+    timestamps: false,
 		classMethods: {
 			validPassword: function(password, passwd, done, user){
 				bcrypt.compare(password, passwd, function(err, isMatch){
@@ -35,35 +43,42 @@ module.exports = function(sequelize, DataTypes) {
   })
 
   // profile.associate = function(models) {
-  //   // Associating Author with Posts
-  //   // When an Author is deleted, also delete any associated Posts
-  //   profile.hasMany(models.project, {
+  //   // Associating Profile with skills
+  //   // When an Profile is deleted, also delete any associated skills
+  //   profile.hasMany(models.Project, {
   //     onDelete: "cascade"
   //   });
   // };
 
   profile.associate = function(models) {
-    // Associating Author with Posts
-    // When an Author is deleted, also delete any associated Posts
+    // Associating Profile with skills
+    // When an Profile is deleted, also delete any associated skills
+    profile.hasMany(models.Skill, {
+      onDelete: "cascade"
+    });
+  }
+  profile.associate = function(models) {
     profile.hasMany(models.frontend_skill, {
       onDelete: "cascade"
     });
   };
 
   profile.associate = function(models) {
-    // Associating Author with Posts
-    // When an Author is deleted, also delete any associated Posts
-    profile.hasMany(models.backend_skills, {
+    profile.hasMany(models.backend_skill, {
       onDelete: "cascade"
     });
   };
 
   profile.associate = function(models) {
-    // Associating Author with Posts
-    // When an Author is deleted, also delete any associated Posts
     profile.hasMany(models.design_skills, {
       onDelete: "cascade"
     });
+  };
+
+  profile.associate = function(models) {
+      profile.hasMany(models.Project, {
+          onDelete: "cascade"
+      });
   };
 
   return profile;
